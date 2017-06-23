@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context="com.tpnet.autoverifycodesample.MainActivity">
+
+    <EditText
+        android:id="@+id/et_code"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:hint="请填写验证码"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="简单获取验证码"
+        android:onClick="simple"
+     />
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="复杂获取验证码"
+        android:onClick="complex"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="打开新界面"
+        android:onClick="open"
+        />
+
+</LinearLayout>

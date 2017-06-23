@@ -1,0 +1,24 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.tpnet.tpautoverifycode">
+
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true"
+        >
+        
+        <!-- android:theme="@android:style/Theme.NoDisplay" -->
+        <activity android:name=".GetPermissionActivity"
+                  android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            />
+        <!-- 读取短信服务 -->
+        <service
+            android:name=".ReadSmsService"
+            android:exported="false"/>
+
+    </application>
+
+</manifest>
