@@ -82,12 +82,12 @@ AutoVerifyCode.getInstance()
         }
 
         @Override
-        public void onFail() {
+        public boolean onFail() {
             //获取短信权限失败
             Toast.makeText(MainActivity.this,"拒绝获取短信权限",Toast.LENGTH_SHORT).show();
-            Log.e("@@","获取短信权限失败,返回真则重试获取权限,或者你获取了之后再返回真");
-            
-            
+            Log.e("@@","获取短信权限失败,返回真则重试获取权限,或者你自己手动获取了之后再返回真也行");
+
+            return false;
         }
     }
 ```
