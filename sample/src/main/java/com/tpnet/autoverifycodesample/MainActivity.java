@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("@@","获取短信权限失败,返回真则重试获取权限,或者你自己手动获取了之后再返回真也行");
             
             
-            return ;
+            return false;
             
         }
     }
