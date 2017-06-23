@@ -1,6 +1,5 @@
 package com.tpnet.tpautoverifycode;
 
-import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
@@ -12,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
  * 配置
  * Created by litp on 2017/6/23.
  */
-public class AutoCodeConfig implements Parcelable {
+public class AutoVerifyCodeConfig implements Parcelable {
 
     public final static int CODE_TYPE_NUMBER = 0X111;    //  纯数字
     public final static int CODE_TYPE_LETTER = 0X222;     // 大写字母和小写字母混合
@@ -131,8 +130,8 @@ public class AutoCodeConfig implements Parcelable {
             return this;
         }
 
-        public AutoCodeConfig build() {
-            AutoCodeConfig codeConfig = new AutoCodeConfig();
+        public AutoVerifyCodeConfig build() {
+            AutoVerifyCodeConfig codeConfig = new AutoVerifyCodeConfig();
             codeConfig.setSmsSender(mSmsSender);
             codeConfig.setSmsSenderStart(mSmsSenderStart);
             codeConfig.setCodeLength(mCodeLength);
@@ -158,11 +157,11 @@ public class AutoCodeConfig implements Parcelable {
         dest.writeInt(this.mCodeType);
     }
 
-    public AutoCodeConfig() {
+    public AutoVerifyCodeConfig() {
     }
 
  
-    protected AutoCodeConfig(Parcel in) {
+    protected AutoVerifyCodeConfig(Parcel in) {
         this.mCodeLength = in.readInt();
         this.mSmsBodyStart = in.readString();
         this.mSmsBodyContains = in.readString();
@@ -172,13 +171,13 @@ public class AutoCodeConfig implements Parcelable {
         this.mCodeType =  in.readInt();
     }
 
-    public static final Creator<AutoCodeConfig> CREATOR = new Creator<AutoCodeConfig>() {
-        public AutoCodeConfig createFromParcel(Parcel source) {
-            return new AutoCodeConfig(source);
+    public static final Creator<AutoVerifyCodeConfig> CREATOR = new Creator<AutoVerifyCodeConfig>() {
+        public AutoVerifyCodeConfig createFromParcel(Parcel source) {
+            return new AutoVerifyCodeConfig(source);
         }
 
-        public AutoCodeConfig[] newArray(int size) {
-            return new AutoCodeConfig[size];
+        public AutoVerifyCodeConfig[] newArray(int size) {
+            return new AutoVerifyCodeConfig[size];
         }
     };
 }

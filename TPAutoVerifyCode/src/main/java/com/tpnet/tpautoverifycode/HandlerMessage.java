@@ -8,13 +8,13 @@ import com.tpnet.tpautoverifycode.callback.GetMessageListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.tpnet.tpautoverifycode.AutoCodeConfig.CODE_TYPE_BIGLETTER_NUMBER;
-import static com.tpnet.tpautoverifycode.AutoCodeConfig.CODE_TYPE_BIG_LETTER;
-import static com.tpnet.tpautoverifycode.AutoCodeConfig.CODE_TYPE_LETTER;
-import static com.tpnet.tpautoverifycode.AutoCodeConfig.CODE_TYPE_LETTER_NUMBER;
-import static com.tpnet.tpautoverifycode.AutoCodeConfig.CODE_TYPE_NUMBER;
-import static com.tpnet.tpautoverifycode.AutoCodeConfig.CODE_TYPE_SMALLLETTER_NUMBER;
-import static com.tpnet.tpautoverifycode.AutoCodeConfig.CODE_TYPE_SMALL_LETTER;
+import static com.tpnet.tpautoverifycode.AutoVerifyCodeConfig.CODE_TYPE_BIGLETTER_NUMBER;
+import static com.tpnet.tpautoverifycode.AutoVerifyCodeConfig.CODE_TYPE_BIG_LETTER;
+import static com.tpnet.tpautoverifycode.AutoVerifyCodeConfig.CODE_TYPE_LETTER;
+import static com.tpnet.tpautoverifycode.AutoVerifyCodeConfig.CODE_TYPE_LETTER_NUMBER;
+import static com.tpnet.tpautoverifycode.AutoVerifyCodeConfig.CODE_TYPE_NUMBER;
+import static com.tpnet.tpautoverifycode.AutoVerifyCodeConfig.CODE_TYPE_SMALLLETTER_NUMBER;
+import static com.tpnet.tpautoverifycode.AutoVerifyCodeConfig.CODE_TYPE_SMALL_LETTER;
 import static com.tpnet.tpautoverifycode.ReadSmsService.RECEIVER_SENDER_MSG;
 import static com.tpnet.tpautoverifycode.ReadSmsService.RECEIVER_SMS_CODE_MSG;
 import static com.tpnet.tpautoverifycode.ReadSmsService.RECEIVER_SMS_MSG;
@@ -27,9 +27,9 @@ import static com.tpnet.tpautoverifycode.ReadSmsService.RECEIVER_SMS_MSG;
 public class HandlerMessage implements GetMessageListener{
     
     
-    private AutoCodeConfig mConfig;
+    private AutoVerifyCodeConfig mConfig;
 
-    public HandlerMessage(AutoCodeConfig mConfig) {
+    public HandlerMessage(AutoVerifyCodeConfig mConfig) {
         this.mConfig = mConfig;
     }
 
@@ -114,7 +114,7 @@ public class HandlerMessage implements GetMessageListener{
         String regex = "(\\d{" + textLength + "})";
 
 
-        @AutoCodeConfig.CodeType
+        @AutoVerifyCodeConfig.CodeType
         int type = mConfig.getCodeType();
         switch (type) {
             case CODE_TYPE_NUMBER:

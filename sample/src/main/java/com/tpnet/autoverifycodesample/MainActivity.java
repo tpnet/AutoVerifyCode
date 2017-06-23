@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.tpnet.autoverifycode.R;
-import com.tpnet.tpautoverifycode.AutoCodeConfig;
+import com.tpnet.tpautoverifycode.AutoVerifyCodeConfig;
 import com.tpnet.tpautoverifycode.AutoVerifyCode;
 import com.tpnet.tpautoverifycode.callback.PermissionCallBack;
 import com.tpnet.tpautoverifycode.callback.SmsCallBack;
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 简单的4到6为的验证码获取
+     * 简单的4到6位的数字验证码获取
      * @param v
      */
     public void simple(View v){
@@ -51,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
      * @param v
      */
     public void complex(View v){
-        AutoCodeConfig config = new AutoCodeConfig.Builder()
-                .codeLength(6) // 设置验证码长度
-                .smsCodeType(AutoCodeConfig.CODE_TYPE_NUMBER)  //验证码类型
-                .smsSenderStart("650") // 验证码发送者号码前几位数字
+        AutoVerifyCodeConfig config = new AutoVerifyCodeConfig.Builder()
+                .codeLength(6) // 验证码长度
+                .smsCodeType(AutoVerifyCodeConfig.CODE_TYPE_NUMBER)  //验证码类型
+                .smsSenderStart("650") // 验证码发送者号码的前几位数字
                 .smsSender("6505551212") // 验证码发送者的号码
                 .smsBodyStartWith("【守护APP】") // 设置验证码短信开头文字，固定可以设置
                 .smsBodyContains("重置") // 设置验证码短信内容包含文字，每个功能包含不一样，例如注册、重置密码
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 .config(config)  //验证码选项配置
                 .smsCallback(new MessageCallBack())  //短信内容回调
                 .permissionCallback(new PerCallBack())  //短信短信回调
-                .into((EditText) findViewById(R.id.et_code))  //要输入的编辑框
+                .into((EditText) findViewById(R.id.et_code))  //要输入的View
                 .start();       //开始
     }
     
@@ -106,17 +106,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onFail() {
+        public boolean onFail() {
             //获取短信权限失败
-            Log.e("@@","获取短信权限失败：");
             Toast.makeText(MainActivity.this,"拒绝获取短信权限",Toast.LENGTH_SHORT).show();
-
+            Log.e("@@","获取短信权限失败,返回真则重试获取权限,或者你自己手动获取了之后再返回真也行");
+            
+            
+            return ;
+            
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //因为一般只用一次，所以页面销毁就释放。
         AutoVerifyCode.getInstance().release();
     }
  

@@ -3,9 +3,7 @@ package com.tpnet.tpautoverifycode;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 
 /**
@@ -15,20 +13,15 @@ import android.support.v4.app.ActivityCompat;
 
 public class GetPermissionActivity extends Activity {
 
-
+ 
     protected static final int AUTOCODE_REQUEST_PERMISSION_CODE = 0x666;
 
+    //获取短信权限成功
     protected static final int AUTOCODE_REQUEST_PERMISSION_SUCCESS = 0x667;
+    
+    //获取短信权限失败
     protected static final int AUTOCODE_REQUEST_PERMISSION_FAIL = 0x668;
-
-
-     
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-       
-    }
-
+    
     /**
      * 简单处理了短信权限
      */

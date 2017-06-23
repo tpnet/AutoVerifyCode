@@ -23,7 +23,7 @@ public class ReadSmsService extends Service {
     // 接收到短信时的action
     private static final String SMS_RECEIVED_ACTION = Telephony.Sms.Intents.SMS_RECEIVED_ACTION;
 
-    //API level>=19,可直接使用Telephony.Sms.CONTENT_URI
+    //API>=19,可直接使用Telephony.Sms.CONTENT_URI
     private static final String SMS_URI = "content://sms";
 
     static final String[] PROJECTION = new String[]{
@@ -33,8 +33,7 @@ public class ReadSmsService extends Service {
             Telephony.Sms.DATE
     };
 
-    public static final String EXTRAS_MESSAGER = "MESSAGER";
-    
+  
     public static final String EXTRAS_CONFIG = "CONFIG";
 
 
@@ -51,7 +50,7 @@ public class ReadSmsService extends Service {
     public static final int RECEIVER_SENDER_MSG = 0X899;
 
  
-    private AutoCodeConfig mConfig;
+    private AutoVerifyCodeConfig mConfig;
 
     long lastTimeofCall = 0L;    //最后一次数据库回调的时间
 
@@ -65,9 +64,6 @@ public class ReadSmsService extends Service {
      */
     private BroadcastReceiver mSmsReceiver;
 
-    
-    HandlerMessage mHandlerMessage;
- 
 
     @Nullable
     @Override
@@ -82,13 +78,13 @@ public class ReadSmsService extends Service {
         if (intent != null) {
             Bundle bundle = intent.getExtras();
             if (bundle == null) {
-                mConfig = new AutoCodeConfig.Builder().build();
+                mConfig = new AutoVerifyCodeConfig.Builder().build();
             } else {
                 mConfig = bundle.getParcelable(EXTRAS_CONFIG);
             }
         }
-        mHandlerMessage = new HandlerMessage(mConfig);
-        mReadSmsObserver =  new SmsObserver(this,mHandlerMessage);
+        HandlerMessage mHandlerMessage = new HandlerMessage(mConfig);
+        mReadSmsObserver =  new SmsObserver(this, mHandlerMessage);
         mSmsReceiver = new SmsReceiver(mHandlerMessage);
         
         register();

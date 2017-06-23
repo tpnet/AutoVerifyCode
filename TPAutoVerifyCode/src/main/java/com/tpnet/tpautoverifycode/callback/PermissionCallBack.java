@@ -8,7 +8,11 @@ package com.tpnet.tpautoverifycode.callback;
 public interface PermissionCallBack {
     
     void onSuccess();
-    
-    void onFail();
+
+    /**
+     * 回调获取短信权限失败
+     * @return 为真，则重试。假则返回。
+     */
+    boolean onFail();
     
 }

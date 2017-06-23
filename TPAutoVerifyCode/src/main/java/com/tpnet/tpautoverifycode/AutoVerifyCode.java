@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Messenger;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.TextView;
@@ -28,7 +27,7 @@ public class AutoVerifyCode {
     
     private Context mContext;
     
-    private AutoCodeConfig mConfig;
+    private AutoVerifyCodeConfig mConfig;
 
     private VerifyCodeHandler mHandler;
     
@@ -100,7 +99,9 @@ public class AutoVerifyCode {
                 case GetPermissionActivity.AUTOCODE_REQUEST_PERMISSION_FAIL:
                     //申请权限失败
                     if(mPermissionCallBack != null){
-                        mPermissionCallBack.onFail();
+                        if( mPermissionCallBack.onFail()){
+                            start();
+                        }
                     }
                     break;
                 default:
@@ -133,7 +134,7 @@ public class AutoVerifyCode {
         return this;
     }
 
-    public AutoVerifyCode config(AutoCodeConfig config) {
+    public AutoVerifyCode config(AutoVerifyCodeConfig config) {
         if (mContext == null) {
             throw new NullPointerException("mContext is null.Please call with(Context) first.");
         }
@@ -171,7 +172,7 @@ public class AutoVerifyCode {
             mHandler = new VerifyCodeHandler();
         }
         if (mConfig == null) {
-            mConfig = new AutoCodeConfig.Builder().build();
+            mConfig = new AutoVerifyCodeConfig.Builder().build();
         }
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED) {
@@ -201,7 +202,6 @@ public class AutoVerifyCode {
     private void startReadSmsService() {
 
         serviceIntent = new Intent(mContext, ReadSmsService.class);
-        serviceIntent.putExtra(ReadSmsService.EXTRAS_MESSAGER, new Messenger(mHandler));
         serviceIntent.putExtra(ReadSmsService.EXTRAS_CONFIG, mConfig);
         mContext.startService(serviceIntent);
     }
@@ -209,8 +209,10 @@ public class AutoVerifyCode {
     protected  Handler getHandler(){
         return mHandler;
     }
-     
-    
+
+    /**
+     * 释放内存
+     */
     public void release(){
         if(serviceIntent != null){
             mContext.stopService(serviceIntent);
