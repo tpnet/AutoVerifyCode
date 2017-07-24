@@ -1,15 +1,18 @@
 package com.tpnet.tpautoverifycode;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.IdRes;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.tpnet.tpautoverifycode.callback.OnInputCompleteListener;
 import com.tpnet.tpautoverifycode.callback.PermissionCallBack;
 import com.tpnet.tpautoverifycode.callback.SmsCallBack;
 
@@ -33,9 +36,13 @@ public class AutoVerifyCode {
     
     private SmsCallBack mSmsCallBack;  //短信内容回调
     
+    private OnInputCompleteListener mOnInputComplete;  //设置文本完毕回调
+    
     private PermissionCallBack mPermissionCallBack; //权限回调
 
-    private Intent serviceIntent;
+    private Intent mServiceIntent;
+    
+    private String mCurrText;  //防止多次设置文本，
 
 
     private class VerifyCodeHandler extends Handler {
@@ -54,28 +61,21 @@ public class AutoVerifyCode {
         
         VerifyCodeHandler() {
             if(this.mTextView == null && mSmsCallBack == null){
-                throw new IllegalArgumentException("target view and smscallback is null,Set at least one");
+                throw new IllegalArgumentException("target view and smscallback is null,Must set at least one");
             }
         }
-      
         
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            TextView mAuthCode = mTextView.get();
-            
+         
             
             switch (msg.what) {
                 case ReadSmsService.OBSERVER_SMS_CODE_MSG:
                 case ReadSmsService.RECEIVER_SMS_CODE_MSG:
-
-                    if (mSmsCallBack != null) {
-                        mSmsCallBack.onGetCode((String) msg.obj);
-                    }
-                    if (mAuthCode != null /*&& mAuthCode.getText().toString().isEmpty()*/) {
-                        mAuthCode.setText((String) msg.obj);
-                        return;
-                    }
+                  
+                    setText(mTextView.get(),(String) msg.obj);
+                    
                     break;
                 case ReadSmsService.RECEIVER_SENDER_MSG:
                     if (mSmsCallBack != null) {
@@ -110,7 +110,7 @@ public class AutoVerifyCode {
         }
 
 
-        public void release() {
+        private void release() {
             mTextView.clear();
             this.mTextView = null;
         }
@@ -148,6 +148,11 @@ public class AutoVerifyCode {
         return this;
     }
 
+    public AutoVerifyCode inputCompleteCallback(OnInputCompleteListener callback) {
+        this.mOnInputComplete = callback;
+        return this;
+    }
+
     public AutoVerifyCode permissionCallback(PermissionCallBack callBack){
         this.mPermissionCallBack = callBack;
         return this;
@@ -163,11 +168,24 @@ public class AutoVerifyCode {
         return this;
     }
 
+    /**
+     * 设置验证码到哪个View
+     * @param id
+     */
+    public AutoVerifyCode into(@IdRes int id) {
+        if(mContext == null){
+            throw new IllegalArgumentException("请先调用with方法设置activity的上下文对象");
+        }
+        TextView textView = (TextView) ((Activity)mContext).findViewById(id);
+        mHandler = new VerifyCodeHandler(textView);
+        return this;
+    }
+
 
     /**
      * 开始监听短信
      */
-    public void start(){
+    public AutoVerifyCode start(){
         if(mHandler == null){
             mHandler = new VerifyCodeHandler();
         }
@@ -182,6 +200,8 @@ public class AutoVerifyCode {
             //申请权限，会回调
             mContext.startActivity(new Intent(mContext,GetPermissionActivity.class));
         }
+        
+        return this;
     }
 
 
@@ -189,8 +209,8 @@ public class AutoVerifyCode {
      * 重新注册，获取权限之后
      */
     private void restart(){
-        if(serviceIntent != null){
-            mContext.stopService(serviceIntent);
+        if(mServiceIntent != null){
+            mContext.stopService(mServiceIntent);
         }
         startReadSmsService();
     }
@@ -201,9 +221,32 @@ public class AutoVerifyCode {
      */
     private void startReadSmsService() {
 
-        serviceIntent = new Intent(mContext, ReadSmsService.class);
-        serviceIntent.putExtra(ReadSmsService.EXTRAS_CONFIG, mConfig);
-        mContext.startService(serviceIntent);
+        mServiceIntent = new Intent(mContext, ReadSmsService.class);
+        mServiceIntent.putExtra(ReadSmsService.EXTRAS_CONFIG, mConfig);
+        mContext.startService(mServiceIntent);
+    }
+    
+    
+    private synchronized void setText(TextView view,String code){
+
+        if(code.equals(mCurrText)){
+            return;
+        }
+        
+
+        if (mSmsCallBack != null) {
+            mSmsCallBack.onGetCode(code);
+        }
+        if (view != null /*&& mAuthCode.getText().toString().isEmpty()*/) {
+            view.setText(code);
+
+            if(view.getText().toString().equals(code) && mOnInputComplete != null){
+                mOnInputComplete.onInputComplete(code);
+            }
+            
+            mCurrText = code;
+ 
+        }
     }
     
     protected  Handler getHandler(){
@@ -214,8 +257,8 @@ public class AutoVerifyCode {
      * 释放内存
      */
     public void release(){
-        if(serviceIntent != null){
-            mContext.stopService(serviceIntent);
+        if(mServiceIntent != null){
+            mContext.stopService(mServiceIntent);
         }
         if(mHandler != null){
             mHandler.release();

@@ -137,7 +137,6 @@ public class ReadSmsService extends Service {
      */
     private void unRegisterReceiver() {
         if (mSmsReceiver == null) return;
-
         unregisterReceiver(mSmsReceiver);
         mSmsReceiver = null;
     }

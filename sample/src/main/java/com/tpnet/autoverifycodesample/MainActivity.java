@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.tpnet.autoverifycode.R;
 import com.tpnet.tpautoverifycode.AutoVerifyCodeConfig;
 import com.tpnet.tpautoverifycode.AutoVerifyCode;
+import com.tpnet.tpautoverifycode.callback.OnInputCompleteListener;
 import com.tpnet.tpautoverifycode.callback.PermissionCallBack;
 import com.tpnet.tpautoverifycode.callback.SmsCallBack;
 
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 简单的4到6位的数字验证码获取
+     * 简单的4到6位的数字验证码获取,不回调
      * @param v
      */
     public void simple(View v){
@@ -65,6 +66,14 @@ public class MainActivity extends AppCompatActivity {
                 .config(config)  //验证码选项配置
                 .smsCallback(new MessageCallBack())  //短信内容回调
                 .permissionCallback(new PerCallBack())  //短信短信回调
+                .inputCompleteCallback(new OnInputCompleteListener() {
+                    @Override
+                    public void onInputComplete(String text) {
+                        //自动输入完毕，可以进行登录等等操作
+                        Log.e("@@","自动输入验证码完成"+text);
+
+                    }
+                })
                 .into((EditText) findViewById(R.id.et_code))  //要输入的View
                 .start();       //开始
     }
@@ -116,6 +125,11 @@ public class MainActivity extends AppCompatActivity {
             
         }
     }
+    
+    
+    
+    
+    
 
     @Override
     protected void onDestroy() {
