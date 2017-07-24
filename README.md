@@ -41,6 +41,14 @@ AutoVerifyCode.getInstance()
                 .config(config)  //验证码选项配置
                 .smsCallback(new MessageCallBack())  //短信内容回调
                 .permissionCallback(new PerCallBack())  //短信短信回调
+                .inputCompleteCallback(new OnInputCompleteListener() {
+                    @Override
+                    public void onInputComplete(String text) {
+                        //自动输入完毕，可以进行登录等等操作
+                        Log.e("@@","自动输入验证码完成"+text);
+
+                    }
+                })
                 .into((EditText) findViewById(R.id.et_code))  //要输入的View
                 .start();       //开始
     }
