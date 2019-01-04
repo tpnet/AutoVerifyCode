@@ -40,7 +40,7 @@ AutoVerifyCode.getInstance()
                 .with(MainActivity.this)
                 .config(config)  //验证码选项配置
                 .smsCallback(new MessageCallBack())  //短信内容回调
-                .permissionCallback(new PerCallBack())  //短信短信回调
+                .permissionCallback(new PerCallBack())  //权限申请回调
                 .inputCompleteCallback(new OnInputCompleteListener() {
                     @Override
                     public void onInputComplete(String text) {
